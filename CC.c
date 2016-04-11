@@ -82,7 +82,7 @@ if(lleft[0]<0 && L == false){
 
 if(rright[0]>=0 && lleft[0]>=0 ){
 	//combine into one array? 
-
+	//Do I compare here? 
 	//push to thing. 
 	rright[0]=other[b]; 
 	rright[0]=-1; 
@@ -98,6 +98,53 @@ if(rright[0]>=0 && lleft[0]>=0 ){
 //If This needs to check if they are equal then you would check here, 
 // and push to error correction if it is false, or the other place if it
 //is true; 
+//still need to figure out what to do if it gets 2 of one side
+//Like what happens if this happens? 
+//I dont think this will loop forever, once it gets past the if else x2 then it just stops if its
+//false. Need a way to check again. Maybe a do while? Should I make left and right seperate? 
+//Does it matter? yes it does, if it takes 2 from right, and assigns one of them left, then its no good. 
+//Maybe put both if/else checks, into a while loop, and if its else, then set the thing to true, 
+//and if it is true, then set it to false
+//EXAMPLE
+//---------------------------------------
+/*
+
+flag = true; 
+
+while(flag){
+	
+f(rright[0] < 0 && R == false){
+	//take input from right motor and set it into the right array
+	rright[0]=right[c];
+	R=true;
+	flag = false; 
+}else{
+	flag = true; 
+	//and it continues to loop, checking for right input. 
+	//but then what if it gets Left first? 
+	//need to figure that out
+	//but this should work. I like this actually
+	//Yes
+	
+
+
+
+	//wait?
+}
+
+
+
+
+}
+
+
+
+
+
+*/
+
+
+
 
 
 
