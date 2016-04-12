@@ -1,33 +1,47 @@
 #include <stdio.h>
 #include <stdbool.h>	
-#include <stdlib.h>
 
 
- int main(void){
+  int main(){
+ 	//C counts for equal values, D counts for not equal values. 
+int b = 0; 
 int c=0; 
-int right[]={1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,11,12,2,3,4,5,6,7,8,9,0,11};
-int left[]={1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,11,12,2,3,4,5,6,7,8,9,0,11};
+int d=0; 
+//test value to go through array right and left; 
+int q = 0; 
+int right[]={1,2,3,4,5};
+int left[]={1,2,2,4,5};
+//storage arrays to keep the element seperate
+
+//test Bool for reject
+bool REJECT = false; 
+
 int rright[]={-1}; 
 int lleft[]={-1}; 
-int both[]={-1,-1};
-int other[sizeof(right)/sizeof(right[0])]; 
-int b = 0; 
+// both is array to hold both values if i need to
+//int both[]={-1,-1};
+//reject is an array of values that are not equal from left and right
+int reject[sizeof(right)/sizeof(right[0])]; 
+//good is an array of values that are equal from left and right
+int good[2*sizeof(right)/sizeof(right[0])]; 
 //boolean to see if you took from right & left
 bool R = false; 
 bool L = false; 
-bool flagr, flagl = true; 
+bool FLAG = true;
+bool flagr = true; 
+bool flagl = true; 
 //lleft and rright can act as buffers maybe	
 // read from left and right, and only continue once it gets both values. 
 //cannot take 2 from left or right. has to be one from each side
 //set values to -1
 
 
+printf("size of good %lu\n",sizeof(good)/sizeof(good[0]));
 
 
-
-
-while(true){
-
+printf("here we go!!\n");
+while(FLAG){
+printf("In while loop\n"); 
 
 //maybe make these if statements do whiles? 
 //take input from right
@@ -35,44 +49,90 @@ while(true){
 while(flagr){
 
 
+
+	printf("In rright while loop\n"); 
+
+
 if(rright[0] < 0 && R == false){
+	printf("In rright if statement\n"); 
 	//take input from right motor and set it into the right array
-	rright[0]=right[c];
+	rright[0]=right[q];
 	flagr = false; 
 	R=true;
 }else{
+	printf("in rright else statement\n");
 	flagr = true; 
-	//wait?
+	//wait
 }
 }
 
-while(flagl){}
-if(lleft[0]<0 && L == false){
+while(flagl){
+	printf("in lleft while loop\n"); 
+if(lleft[0] < 0 && L == false){
+	printf("in lleft if statement\n");
 	//take input from the left motor and set it into the left array
-	lleft[0]=left[c];
+	lleft[0]=left[q];
 	flagl = false; 
 	L=true; 
 }else{
-	flagl = true; 
+	printf("In lleft else statement\n");
+	//flagl = true; 
 	//wait?
 }
 }
 
-if(rright[0]>=0 && lleft[0]>=0 ){
+//if(rright[0]>=0 && lleft[0]>=0 ){
+	printf("in comparision\n");
 	//combine into one array? 
 	//Do I compare here? 
 	//push to thing. 
-	rright[0]=other[b]; 
-	rright[0]=-1; 
-	R=false; 
-	b++; 
-	lleft[0]=other[b];
-	lleft[0]=-1;  
-	L=false; 
-	b++; 
-	c++; 
+	//if the 2 are equal, add them to array, and say they where added. 
+	//if they are not equal, add them to reject array and say they where added. 
+	if(rright[0]==lleft[0]){
+
+		good[c]=rright[0]; 
+		printf("%d added to good from right\n",rright[0]); 
+		c++; 
+		good[c]=lleft[0]; 
+		printf("%d added to good from left\n",lleft[0]); 
+		c++; 
+}else{
+
+	printf("%d from right is not equal to %d from left\n",rright[0],lleft[0]); 
+	reject[d]=rright[0]; 
+	printf("%d added to reject from right\n",rright[0]); 
+	d++; 
+	reject[d]=lleft[0]; 
+	printf("%d added to rejct from left\n",lleft[0]); 
+	d++; 
+	//test bool
+	REJECT = true; 
 }
 
+//reset left and right storage arrays. 
+printf("Resetting\n"); 
+//reset your shit tim smh. 
+flagr=true; 
+flagl=true; 
+//
+rright[0]=-1; 
+R=false; 
+lleft[0]=-1; 
+L=false; 
+q++; 
+b++;
+printf("done with loop, going back!\n");
+//This literally goes on forever
+if(b >= sizeof(right)/sizeof(right[0])){
+FLAG = false; 
+printf("COMPLETE\n"); 
+printf("Reject = %s\n",REJECT ? "true" : "false"); 
+//printf("Size of right is %d",);
+printf("b=%d\n",c); 
+}
+//}
+}
+}
 //If This needs to check if they are equal then you would check here, 
 // and push to error correction if it is false, or the other place if it
 //is true; 
@@ -118,7 +178,8 @@ f(rright[0] < 0 && R == false){
 
 
 
-}
-}
+
+
+
 
 
