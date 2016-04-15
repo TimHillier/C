@@ -1,22 +1,59 @@
 #include <stdio.h>
 #include <stdbool.h>	
+#include <stdlib.h>
 #include <pthread.h>
 
 
-  int main(){
- 	//C counts for equal values, D counts for not equal values. 
-int b,c,d,q = 0; 
+//functions?
 
-//test value to go through array right and left; 
-int right[]={1,2,3,4,5};
+void*rightCounter(); 
+pthread_mutex_t mutex1 = PTHREAD_MUTEX_INITIALIZER; 
+int rightcounter = 0; 
+
+void*leftCounter();
+pthread_mutex_t mutex2 = PTHREAD_MUTEX_INITIALIZER;
+int leftcounter = 0 ; 
+
+
+
+
+
+
+bool flagr = true; 
+int rright[]={-1}; 
+bool R = false; 
+int right[]={1,2,2,4,5};
 int left[]={1,2,2,4,5};
+int lleft[]={-1}; 
+bool L = false; 
+bool FLAG = true;
+bool flagl = true;
+int q = 0; 
+
+
+
+
+
+  int main()
+  {
+  	//create threads
+  	pthread_t thread1, thread2; 
+  	int rc1, rc2; 
+
+  	int counter =0; 
+
+
+ 	//C counts for equal values, D counts for not equal values. 
+int b = 0; 
+int c=0; 
+int d=0; 
+//test value to go through array right and left; 
+
 //storage arrays to keep the element seperate
 
 //test Bool for reject
 bool REJECT = false; 
 
-int rright[]={-1}; 
-int lleft[]={-1}; 
 // both is array to hold both values if i need to
 //int both[]={-1,-1};
 //reject is an array of values that are not equal from left and right
@@ -24,11 +61,7 @@ int reject[sizeof(right)/sizeof(right[0])];
 //good is an array of values that are equal from left and right
 int good[2*sizeof(right)/sizeof(right[0])]; 
 //boolean to see if you took from right & left
-bool R = false; 
-bool L = false; 
-bool FLAG = true;
-bool flagr = true; 
-bool flagl = true; 
+ 
 //lleft and rright can act as buffers maybe	
 // read from left and right, and only continue once it gets both values. 
 //cannot take 2 from left or right. has to be one from each side
@@ -38,51 +71,16 @@ bool flagl = true;
 printf("size of good %lu\n",sizeof(good)/sizeof(good[0]));
 
 
-printf("here we go!!\n");
 while(FLAG){
-printf("In while loop\n"); 
 
-//maybe make these if statements do whiles? 
-//take input from right
-
-
-//Thread 1 ({
-while(flagr){
-	printf("In rright while loop\n"); 
-if(rright[0] < 0 && R == false){
-	printf("In rright if statement\n"); 
-	//take input from right motor and set it into the right array
-	rright[0]=right[q];
-	flagr = false; 
-	R=true;
-}else{
-	printf("in rright else statement\n");
-	flagr = true; 
-	//wait
+if((rc1=pthread_create(&thread1, NULL, &rightCounter, NULL)))
+{
+	printf("Thread creation failed: %d\n", rc1);
 }
+if((rc2 = pthread_create(&thread2, NULL, &leftCounter,NULL)))
+{
+	printf("Thread creation failed: %d\n",rc2); 
 }
-//end Thread 1 })
-
-// start Thread 2({
-while(flagl){
-	printf("in lleft while loop\n"); 
-if(lleft[0] < 0 && L == false){
-	printf("in lleft if statement\n");
-	//take input from the left motor and set it into the left array
-	lleft[0]=left[q];
-	flagl = false; 
-	L=true; 
-}else{
-	printf("In lleft else statement\n");
-	//flagl = true; 
-	//wait?
-}
-}
-//end Thread 2})
-
-
-
-
 
 
 
@@ -98,7 +96,11 @@ if(lleft[0] < 0 && L == false){
 
 
 	//Should this be in a thread/ 
-	//maybe.
+	//maybe. 
+
+pthread_join(thread1, NULL); 
+pthread_join(thread2, NULL); 
+	
 	if(rright[0]==lleft[0]){
 
 		good[c]=rright[0]; 
@@ -120,9 +122,7 @@ if(lleft[0] < 0 && L == false){
 	REJECT = true; 
 }
 
-//reset left and right storage arrays. 
-printf("Resetting\n"); 
-//reset your shit tim smh. 
+
 flagr=true; 
 flagl=true; 
 //
@@ -132,18 +132,75 @@ lleft[0]=-1;
 L=false; 
 q++; 
 b++;
-printf("done with loop, going back!\n");
 //This literally goes on forever
 if(b >= sizeof(right)/sizeof(right[0])){
 FLAG = false; 
 printf("COMPLETE\n"); 
 printf("Reject = %s\n",REJECT ? "true" : "false"); 
-//printf("Size of right is %d",);
-printf("b=%d\n",c); 
-}
+
 //}
 }
 }
+}
+
+//function
+void*rightCounter()
+{
+	pthread_mutex_lock(&mutex1); 
+	//rightcounter++;
+	//printf("rightcounter\n");
+		while(flagr){
+	if(rright[0] < 0 && R == false){
+		//take input from right motor and set it into the right array
+		rright[0]=right[q];
+		flagr = false; 
+		R=true;
+	}else{
+		flagr = true; 
+		//wait
+}
+} 
+ 
+	pthread_mutex_unlock(&mutex1); 
+	return 0; 
+}
+
+
+
+void*leftCounter()
+{
+	pthread_mutex_lock(&mutex2); 
+	//leftcounter++; 
+	//printf("leftcounter\n");
+	while(flagl){
+		if(lleft[0] < 0 && L == false){
+		//take input from the left motor and set it into the left array
+		lleft[0]=left[q];
+		flagl = false; 
+		L=true; 
+	}else{
+		flagl = true; 
+		//wait?
+}
+}
+
+	pthread_mutex_unlock(&mutex2); 
+	return 0; 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //If This needs to check if they are equal then you would check here, 
 // and push to error correction if it is false, or the other place if it
 //is true; 
